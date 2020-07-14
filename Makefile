@@ -24,6 +24,9 @@ clean:
 install:
 	$(GO) install ./...
 
+uninstall:
+	$(RM) $(GOBIN)/editd $(GOBIN)/E $(GOBIN)/B
+
 editd: $(wildcard cmd/editd/*.go) $(edit)
 	$(GO) build $(cmd)/editd
 
