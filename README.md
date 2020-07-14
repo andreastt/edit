@@ -4,8 +4,10 @@ edit
 These are a small set of utilities for editing files from a remote
 system over an [ssh(1)] session on your local machine’s text editor.
 
-It should support all editors, but it is written specifically with
-Plan 9’s [acme(1)] in mind.
+It currently only supports editing files that are available on the
+local system via an [sshfs(1)] mount.  It should however support
+all editors, but was written specifically with Plan 9’s [acme(1)]
+in mind.
 
 Install the necessary programs on both systems:
 
