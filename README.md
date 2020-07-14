@@ -41,6 +41,19 @@ variable.  If `EDITOR` is not defined it will fall back to [ed(1)],
 which is the standard editor.
 
 
+Known bugs
+----------
+
+* Missing support for files not available via a mountpoint on the
+  local system.  My current thinking is to remedy this either by
+  temporarily mounting and unmounting the remote directory (requires
+  [sshfs(1)] and FUSE), or by copying the file to a temporary
+  directory on the local end and syncing it back.
+
+* The _B_ program is completely defunct.
+
+
 [acme(1)]: http://man.cat-v.org/plan_9/1/acme
 [ed(1)]: https://manpages.debian.org/buster/ed/ed.1.en.html
 [ssh(1)]: https://manpages.debian.org/buster/openssh-client/ssh.1.en.html
+[sshfs(1)]: https://manpages.debian.org/buster/sshfs/sshfs.1.en.html
