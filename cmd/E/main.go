@@ -37,8 +37,6 @@ func main() {
 }
 
 func E(arg ...string) {
-	log.Println("editor args:", arg)
-
 	if sshconn != "" {
 		if len(edconn) < 0 {
 			log.Fatal("missing EDITOR_CONNECTION")
