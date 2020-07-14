@@ -2,10 +2,10 @@ edit
 ====
 
 These are a small set of utilities for editing files from a remote
-system over an ssh(1) session on your local machine’s text editor.
+system over an [ssh(1)] session on your local machine’s text editor.
 
-It should support all editors, but is written specifically with
-Plan 9’s acme(1) in mind.
+It should support all editors, but it is written specifically with
+Plan 9’s [acme(1)] in mind.
 
 Install the necessary programs on both systems:
 
@@ -36,5 +36,10 @@ Requires OpenSSH 6.7… because of Unix domain socket proxy forwarding.
 
 When B or E is invoked on the remote system, editd will translate
 the path(s) and call the program set in the `EDITOR` environment
-variable.  If `EDITOR` is not defined it will fall back to ed(1),
+variable.  If `EDITOR` is not defined it will fall back to [ed(1)],
 which is the standard editor.
+
+
+[acme(1)]: http://man.cat-v.org/plan_9/1/acme
+[ed(1)]: https://manpages.debian.org/buster/ed/ed.1.en.html
+[ssh(1)]: https://manpages.debian.org/buster/openssh-client/ssh.1.en.html
