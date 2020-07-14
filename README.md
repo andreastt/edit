@@ -9,9 +9,10 @@ local system via an [sshfs(1)] mount.  It should however support
 all editors, but was written specifically with Plan 9’s [acme(1)]
 in mind.
 
-Install the necessary programs on both systems:
+Install the necessary programs on the respective systems:
 
-	% go get sny.no/tools/edit/...
+	local% go get sny.no/tools/edit/cmd/editd
+	remote% go get sny.no/tools/edit/cmd/E sny.no/tools/edit/cmd/B
 
 First start the editd daemon on your local machine:
 
