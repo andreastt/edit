@@ -13,24 +13,25 @@ Install the necessary programs on both systems:
 
 First start the editd daemon on your local machine:
 
-	% editd & Listening on …
+	% editd &
+	./editd: listening on [::]:52670
 
 Start an ssh session to the remote machine with a reverse proxy
 tunnel for communicating with editd:
 
-	% ssh -R /tmp/edit/ns.am.default:localhost:52670 <user>@<remote>
+	% ssh -R 52670:localhost:52670 <user>@<remote>
 
 You can make ssh do this permanently by adding a section to your
 $HOME/.ssh/config file:
 
 	Host <remote>
-		RemoteForward /tmp/edit/ns.am.default localhost:52670
+		RemoteForward 52670 localhost:52670
 
 Use the E or B programs to invoke your favourite editor within this
 ssh session:
 
-	% E hello.txt  # will wait until hello.txt is saved % B
-	hello.txt  # will return immediately
+	% E hello.txt  # will wait until hello.txt is saved
+	% B hello.txt  # will return immediately
 
 Requires OpenSSH 6.7… because of Unix domain socket proxy forwarding.
 
