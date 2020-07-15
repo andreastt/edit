@@ -19,6 +19,28 @@ First start the editd daemon on your local machine:
 	% editd &
 	./editd: listening on [::]:52670
 
+If you are on macOS you may create a [launch agent] for the editd
+daemon in ~/Library/LaunchAgents/editd.plist:
+
+	<?xml version="1.0" encoding="UTF-8"?>
+	<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+	<plist version="1.0">
+	<dict>
+		<key>Label</key>
+		<string>editd</string>
+		<key>ProgramArguments</key>
+		<array><string>editd<string></array>
+		<key>RunAtLoad</key>
+		<true />
+	</dict>
+	</plist>
+
+The agent can be enabled, activated, and deactivated this way:
+
+	% launchctl enable editd
+	% launchctl start editd
+	% launchctl stop editd
+
 Start an ssh session to the remote machine with a reverse proxy
 tunnel for communicating with editd:
 
@@ -60,3 +82,5 @@ Known bugs
 [ed(1)]: https://manpages.debian.org/buster/ed/ed.1.en.html
 [ssh(1)]: https://manpages.debian.org/buster/openssh-client/ssh.1.en.html
 [sshfs(1)]: https://manpages.debian.org/buster/sshfs/sshfs.1.en.html
+
+[launch agent]: https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html
