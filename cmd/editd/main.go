@@ -7,6 +7,7 @@ import (
 	"net"
 	"net/rpc"
 	"os"
+	"os/exec"
 	"os/signal"
 	"strings"
 	"syscall"
@@ -92,11 +93,39 @@ func (e *Edit) E(req edit.Request, resp *edit.ExitCode) error {
 		}
 	}
 	debug("editing:", args)
-	// non-name *resp on left side of := ???
-	ex, err := edit.E(args...)
+	ex, err := E(args...)
+	if err != nil {
+		debug("unable to start editor:", err)
+		return err
+	}
 	debug("editor exit code:", ex)
-	*resp = ex
-	return err
+	*resp = edit.ExitCode(ex)
+	return nil
+}
+
+func E(arg ...string) (ex int, err error) {
+	ed, err := exec.LookPath(edit.Editor)
+	if err != nil {
+		return ex, edit.ErrNotFound
+	}
+
+	// TODO: check for circular EDITOR
+
+	cmd := exec.Command(ed, arg...)
+	if err := cmd.Start(); err != nil {
+		return ex, edit.ErrCannotExec
+	}
+	if err := cmd.Wait(); err != nil {
+		if exiterr, ok := err.(*exec.ExitError); ok {
+			if status, ok := exiterr.Sys().(syscall.WaitStatus); ok {
+				// that the editor returns a non-zero exit code
+				// is not an error in our part
+				return status.ExitStatus(), nil
+			}
+		}
+	}
+	// ergo, si non non-nulla, nulla est
+	return 0, nil
 }
 
 func translatepath(remotefilep string) string {
