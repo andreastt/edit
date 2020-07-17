@@ -33,6 +33,5 @@ editd: $(wildcard cmd/editd/*.go) $(edit)
 E: $(wildcard cmd/E/*.go) $(edit) editd
 	$(GO) build $(cmd)/E
 
-# should it be E<-B?
-B: $(wildcard cmd/B/*.go) E
+B: $(wildcard cmd/B/*.go) $(edit) editd
 	$(GO) build $(cmd)/B
