@@ -75,8 +75,6 @@ Known bugs
   [sshfs(1)] and FUSE), or by copying the file to a temporary
   directory on the local end and syncing it back.
 
-* The _B_ program is completely defunct.
-
 
 [acme(1)]: http://man.cat-v.org/plan_9/1/acme
 [ed(1)]: https://manpages.debian.org/buster/ed/ed.1.en.html
