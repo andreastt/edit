@@ -15,6 +15,7 @@ var (
 
 var (
 	ErrCannotExec = errors.New("unable to start editor process")
+	ErrCircular   = errors.New("EDITOR is circular")
 	ErrNotFound   = errors.New("no such editor")
 )
 
@@ -38,6 +39,11 @@ func Realpaths(args []string) (normargs []string, err error) {
 		}
 	}
 	return normargs, nil
+}
+
+func IsProcessCircular(cur, ed string) bool {
+	// TODO: check that cur and ed are not the same executable
+	return false
 }
 
 func env(key, fallbackv string) string {

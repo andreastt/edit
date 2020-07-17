@@ -108,9 +108,13 @@ func E(arg ...string) (ex int, err error) {
 	if err != nil {
 		return ex, edit.ErrNotFound
 	}
-
-	// TODO: check for circular EDITOR
-
+	cur, err := os.Executable()
+	if err != nil {
+		return ex, err
+	}
+	if edit.IsProcessCircular(cur, ed) {
+		return ex, edit.ErrCircular
+	}
 	cmd := exec.Command(ed, arg...)
 	if err := cmd.Start(); err != nil {
 		return ex, edit.ErrCannotExec
