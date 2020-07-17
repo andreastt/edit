@@ -1,24 +1,25 @@
 edit
 ====
 
-These are a small set of utilities for editing files from a remote
+These are a small set of utilities for editing files on a remote
 system over an [ssh(1)] session on your local machine’s text editor.
 
-It currently only supports editing files that are available on the
-local system via an [sshfs(1)] mount.
+A major caveat is that it currently only supports editing of files
+that are available off an [sshfs(1)] mount on the local system.
+There are plans to support editing of arbitrary remote files without
+the need for mounting the remote filesystem.
 
-The utilities were written specifically for Plan 9’s [acme(1)]
-editor, but could theoretically work with any non-blocking editor
+The editing utilities were written specifically for Plan 9’s [acme(1)]
+editor, but should theoretically work with any non-blocking editor
 set in `EDITOR_B`.
 
-Install the necessary programs on the respective systems:
+Install the necessary programs:
 
-	local% go get sny.no/tools/edit/cmd/editd
-	remote% go get sny.no/tools/edit/cmd/E sny.no/tools/edit/cmd/B
+	% go get sny.no/tools/edit/...
 
 First start the editd daemon on your local machine:
 
-	% editd &
+	% editd
 	./editd: listening on [::]:52670
 
 If you are on macOS you may create a [launch agent] for the editd
@@ -56,27 +57,23 @@ $HOME/.ssh/config file:
 
 Use the E or B programs to open files:
 
-	% E hello.txt  # will wait until hello.txt is saved
+	% E hello.txt  # will block until hello.txt is modified
 	% B hello.txt  # will return immediately
 
-_B_ returns immediately which is useful when if you want to open
-files for editing and continue using your shell session for other
-tasks.  _E_, on the other hand, is blocking and suitable as the
-system editor:
+_B_ returns immediately which is useful when for when you want to
+open files for editing and continue using your shell session for
+other tasks.  _E_, on the other hand, is blocking and suitable for
+use as the system editor.
+
+To make _E_ the permanent editor:
 
 	% export EDITOR=$GOBIN/E
 
-Requires OpenSSH 6.7… because of Unix domain socket proxy forwarding.
-
-
-Known bugs
-----------
-
-* Missing support for files not available via a mountpoint on the
-  local system.  My current thinking is to remedy this either by
-  temporarily mounting and unmounting the remote directory (requires
-  [sshfs(1)] and FUSE), or by copying the file to a temporary
-  directory on the local end and syncing it back.
+_B_ and _E_ can be used on both the local and remote system.  When
+invoked on the remote system, editd will translate the given file
+paths and match them onto an [sshfs(1)] mount on the local system.
+This enables you to transparently open files for editing from any
+remote ssh session.
 
 
 [acme(1)]: http://man.cat-v.org/plan_9/1/acme
@@ -85,4 +82,3 @@ Known bugs
 [sshfs(1)]: https://manpages.debian.org/buster/sshfs/sshfs.1.en.html
 
 [launch agent]: https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html
-
