@@ -100,7 +100,11 @@ func E(arg ...string) error {
 }
 
 func B(arg ...string) error {
-	cmd := exec.Command("./B", arg...)
+	ed, err := exec.LookPath(edit.Editor)
+	if err != nil {
+		return err
+	}
+	cmd := exec.Command(ed, arg...)
 	if err := cmd.Start(); err != nil {
 		return edit.ErrCannotExec
 	}
