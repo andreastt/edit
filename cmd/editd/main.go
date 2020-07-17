@@ -80,17 +80,8 @@ func main() {
 type Edit int
 
 func (e *Edit) E(req edit.Request, resp *edit.ExitCode) error {
-	args := make([]string, len(req.Args))
-	for n, arg := range req.Args {
-		if strings.Index(arg, "-") == 0 {
-			args[n] = arg
-		} else {
-			path := translatepath(arg)
-			args[n] = path
-		}
-	}
-	debug("editing:", args)
-	ex, err := E(args...)
+	args := mapargs(req.Args)
+	ex, err := wait("E", args...)
 	if err != nil {
 		debug("unable to start editor:", err)
 		return err
@@ -100,8 +91,20 @@ func (e *Edit) E(req edit.Request, resp *edit.ExitCode) error {
 	return nil
 }
 
-func E(arg ...string) (ex int, err error) {
-	e, err := exec.LookPath("E")
+func (e *Edit) B(req edit.Request, resp *edit.ExitCode) error {
+	args := mapargs(req.Args)
+	ex, err := wait("B", args...)
+	if err != nil {
+		debug("unable to start editor:", err)
+		return err
+	}
+	debug("editor exit code:", ex)
+	*resp = edit.ExitCode(ex)
+	return nil
+}
+
+func wait(path string, arg ...string) (ex int, err error) {
+	ed, err := exec.LookPath(path)
 	if err != nil {
 		return ex, edit.ErrNotFound
 	}
@@ -109,10 +112,10 @@ func E(arg ...string) (ex int, err error) {
 	if err != nil {
 		return ex, err
 	}
-	if edit.IsProcessCircular(cur, e) {
+	if edit.IsProcessCircular(cur, ed) {
 		return ex, edit.ErrCircular
 	}
-	cmd := exec.Command(e, arg...)
+	cmd := exec.Command(ed, arg...)
 	if err := cmd.Start(); err != nil {
 		return ex, edit.ErrCannotExec
 	}
@@ -127,6 +130,19 @@ func E(arg ...string) (ex int, err error) {
 	}
 	// ergo, si non non-nulla, nulla est
 	return 0, nil
+}
+
+func mapargs(rargs []string) []string {
+	args := make([]string, len(rargs))
+	for n, arg := range rargs {
+		if strings.Index(arg, "-") == 0 {
+			args[n] = arg
+		} else {
+			path := translatepath(arg)
+			args[n] = path
+		}
+	}
+	return args
 }
 
 func translatepath(remotefilep string) string {
