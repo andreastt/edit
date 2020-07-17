@@ -40,9 +40,6 @@ func main() {
 	flag.Usage = usage
 	flag.Parse()
 
-	debug("using editor", edit.Editor)
-	debug("using namespace", edit.Namespace)
-
 	if len(*afnet) > 0 {
 		network = "unix"
 		addr = *afnet
@@ -104,7 +101,7 @@ func (e *Edit) E(req edit.Request, resp *edit.ExitCode) error {
 }
 
 func E(arg ...string) (ex int, err error) {
-	ed, err := exec.LookPath(edit.Editor)
+	e, err := exec.LookPath("E")
 	if err != nil {
 		return ex, edit.ErrNotFound
 	}
@@ -112,10 +109,10 @@ func E(arg ...string) (ex int, err error) {
 	if err != nil {
 		return ex, err
 	}
-	if edit.IsProcessCircular(cur, ed) {
+	if edit.IsProcessCircular(cur, e) {
 		return ex, edit.ErrCircular
 	}
-	cmd := exec.Command(ed, arg...)
+	cmd := exec.Command(e, arg...)
 	if err := cmd.Start(); err != nil {
 		return ex, edit.ErrCannotExec
 	}

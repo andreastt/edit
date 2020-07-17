@@ -64,7 +64,7 @@ func RB(arg ...string) (err error) {
 }
 
 func ExecveB(arg ...string) error {
-	ed, err := exec.LookPath(edit.Editor)
+	b, err := exec.LookPath(edit.Editor)
 	if err != nil {
 		return err
 	}
@@ -72,11 +72,11 @@ func ExecveB(arg ...string) error {
 	if err != nil {
 		return err
 	}
-	if edit.IsProcessCircular(cur, ed) {
+	if edit.IsProcessCircular(cur, b) {
 		return edit.ErrCircular
 	}
-	args := append([]string{ed}, arg...)
-	if err := syscall.Exec(ed, args, os.Environ()); err != nil {
+	args := append([]string{b}, arg...)
+	if err := syscall.Exec(b, args, os.Environ()); err != nil {
 		return err
 	}
 	panic("never reached")

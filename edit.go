@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	Editor           = env("EDITOR", "$PLAN9/bin/B")
+	Editor           = env("EDITOR_B", "$PLAN9/bin/B")
 	EditorConnection = env("EDITOR_CONNECTION", "localhost:52670")
 	Namespace        = env("NAMESPACE", "")
 )

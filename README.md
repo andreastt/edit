@@ -5,9 +5,11 @@ These are a small set of utilities for editing files from a remote
 system over an [ssh(1)] session on your local machine’s text editor.
 
 It currently only supports editing files that are available on the
-local system via an [sshfs(1)] mount.  It should however support
-all editors, but was written specifically with Plan 9’s [acme(1)]
-in mind.
+local system via an [sshfs(1)] mount.
+
+The utilities were written specifically for Plan 9’s [acme(1)]
+editor, but could theoretically work with any non-blocking editor
+set in `EDITOR_B`.
 
 Install the necessary programs on the respective systems:
 
@@ -52,18 +54,19 @@ $HOME/.ssh/config file:
 	Host <remote>
 		RemoteForward 52670 localhost:52670
 
-Use the E or B programs to invoke your favourite editor within this
-ssh session:
+Use the E or B programs to open files:
 
 	% E hello.txt  # will wait until hello.txt is saved
 	% B hello.txt  # will return immediately
 
-Requires OpenSSH 6.7… because of Unix domain socket proxy forwarding.
+_B_ returns immediately which is useful when if you want to open
+files for editing and continue using your shell session for other
+tasks.  _E_, on the other hand, is blocking and suitable as the
+system editor:
 
-When B or E is invoked on the remote system, editd will translate
-the path(s) and call the program set in the `EDITOR` environment
-variable.  If `EDITOR` is not defined it will fall back to [ed(1)],
-which is the standard editor.
+	% export EDITOR=$GOBIN/E
+
+Requires OpenSSH 6.7… because of Unix domain socket proxy forwarding.
 
 
 Known bugs
@@ -82,3 +85,4 @@ Known bugs
 [sshfs(1)]: https://manpages.debian.org/buster/sshfs/sshfs.1.en.html
 
 [launch agent]: https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html
+
