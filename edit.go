@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	Editor           = env("EDITOR", "ed")
+	Editor           = env("EDITOR", "$PLAN9/bin/B")
 	EditorConnection = env("EDITOR_CONNECTION", "localhost:52670")
 	Namespace        = env("NAMESPACE", "")
 )
@@ -43,7 +43,7 @@ func Realpaths(args []string) (normargs []string, err error) {
 func env(key, fallbackv string) string {
 	v, ok := os.LookupEnv(key)
 	if !ok {
-		return fallbackv
+		v = fallbackv
 	}
-	return v
+	return os.ExpandEnv(v)
 }
