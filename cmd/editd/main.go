@@ -3,6 +3,7 @@ package main // sny.no/tools/edit/cmd/editd
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net"
 	"net/rpc"
@@ -35,10 +36,13 @@ func usage() {
 }
 
 func main() {
-	log.SetFlags(0)
-	log.SetPrefix(fmt.Sprintf("%s: ", os.Args[0]))
 	flag.Usage = usage
 	flag.Parse()
+	log.SetFlags(0)
+	log.SetPrefix(fmt.Sprintf("%s: ", os.Args[0]))
+	if !*verbose {
+		log.SetOutput(ioutil.Discard)
+	}
 
 	if len(*afnet) > 0 {
 		network = "unix"
@@ -83,10 +87,10 @@ func (e *Edit) E(req edit.Request, resp *edit.ExitCode) error {
 	args := mapargs(req.Args)
 	ex, err := wait("E", args...)
 	if err != nil {
-		debug("unable to start editor:", err)
+		log.Println("unable to start editor:", err)
 		return err
 	}
-	debug("editor exit code:", ex)
+	log.Println("editor exit code:", ex)
 	*resp = edit.ExitCode(ex)
 	return nil
 }
@@ -95,10 +99,10 @@ func (e *Edit) B(req edit.Request, resp *edit.ExitCode) error {
 	args := mapargs(req.Args)
 	ex, err := wait("B", args...)
 	if err != nil {
-		debug("unable to start editor:", err)
+		log.Println("unable to start editor:", err)
 		return err
 	}
-	debug("editor exit code:", ex)
+	log.Println("editor exit code:", ex)
 	*resp = edit.ExitCode(ex)
 	return nil
 }
@@ -151,22 +155,12 @@ func translatepath(remotefilep string) string {
 			continue
 		}
 		if strings.HasPrefix(remotefilep, mountp.Remotep) {
-			debugf("%s mounted on %s", mountp.Remotep, mountp.Localp)
+			log.Printf("%s mounted on %s\n", mountp.Remotep, mountp.Localp)
 			localp := strings.Replace(remotefilep, mountp.Remotep, mountp.Localp, 1)
-			debugf("translated local file path %s to %s", remotefilep, localp)
+			log.Printf("translated local file path %s to %s\n", remotefilep, localp)
 			return localp
 		}
 	}
-	debug("path does not have a mountpoint:", remotefilep)
+	log.Println("path does not have a mountpoint:", remotefilep)
 	return remotefilep
-}
-
-func debug(v ...interface{}) {
-	if *verbose {
-		log.Println(v...)
-	}
-}
-
-func debugf(format string, v ...interface{}) {
-	debug(fmt.Sprintf(format, v...))
 }
